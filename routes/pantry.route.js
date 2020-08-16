@@ -119,7 +119,7 @@ pantryRouter.put("/updatepantryname/:pantryid", (req, res) => {
         res.setHeader("Content-Type", "application/json");
         res.json({
           success: false,
-          status: "Pantry name Not updated!!",
+          status: "Pantry name not updated!!",
           error: err,
         });
       } else {
