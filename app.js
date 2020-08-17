@@ -25,6 +25,8 @@ connection.then(
 var userRouter = require("./routes/user.route");
 var ingredientRouter = require("./routes/ingredient.route");
 var pantryRouter = require("./routes/pantry.route");
+var recipeRouter = require("./routes/recipe.route");
+// var testApi = require("./routes/test.route");
 
 var app = express();
 // view engine setup
@@ -42,6 +44,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/user", userRouter);
 app.use("/ingredient", ingredientRouter);
 app.use("/pantry", pantryRouter);
+app.use("/recipe", recipeRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
