@@ -62,4 +62,25 @@ recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
     }
   });
 });
+recipeRouter.get("/getallrecipiefromdb", (req, res) => {
+  RecipeDB.find({}, (err, recipies) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Recipies not found!!",
+        error: err,
+      });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: true,
+        status: "Recipies found!!",
+        recipies: recipies,
+      });
+    }
+  });
+});
 module.exports = recipeRouter;
