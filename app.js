@@ -26,6 +26,7 @@ var userRouter = require("./routes/user.route");
 var ingredientRouter = require("./routes/ingredient.route");
 var pantryRouter = require("./routes/pantry.route");
 var recipeRouter = require("./routes/recipe.route");
+var favouriteRouter = require("./routes/favourite.route");
 // var testApi = require("./routes/test.route");
 
 var app = express();
@@ -45,6 +46,8 @@ app.use("/user", userRouter);
 app.use("/ingredient", ingredientRouter);
 app.use("/pantry", pantryRouter);
 app.use("/recipe", recipeRouter);
+app.use("/favourite", favouriteRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

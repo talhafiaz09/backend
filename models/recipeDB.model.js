@@ -42,5 +42,31 @@ var recipeDBSchema = new Schema({
     type: String,
     default: null,
   },
+  nutrition: {
+    proteins: {
+      type: String,
+      default: "0",
+    },
+    fats: {
+      type: String,
+      default: "0",
+    },
+    fiber: {
+      type: String,
+      default: "0",
+    },
+    vitamins: {
+      type: String,
+      default: "0",
+    },
+    carbohydrate: {
+      type: String,
+      default: "0",
+    },
+  },
+  video: {
+    type: String,
+    default: null,
+  },
 });
 module.exports = mongoose.model("RecipeDB", recipeDBSchema);

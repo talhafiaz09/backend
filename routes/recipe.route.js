@@ -1,6 +1,7 @@
 var express = require("express");
 var recipeRouter = express.Router();
 var RecipeDB = require("../models/recipeDB.model");
+var Pantry = require("../models/pantry.model");
 var request = require("request");
 var options = {
   method: "GET",
@@ -42,6 +43,9 @@ recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
   recipeDB.timers = req.body.timers;
   recipeDB.imageURL = req.body.imageURL;
   recipeDB.originalURL = req.body.originalURL;
+  recipeDB.rating = req.body.rating;
+  recipeDB.nutrition = req.body.nutrition;
+  recipeDB.video = req.body.video;
   RecipeDB.create(recipeDB, (err, recipe) => {
     if (err) {
       res.statusCode = 500;
@@ -58,6 +62,57 @@ recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
         success: true,
         status: "Recipe added!!",
         Recipe: recipe,
+      });
+    }
+  });
+});
+recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
+  Pantry.findOne({ _id: req.params.id }, (err, pantry) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Pantry not found!!",
+        error: err,
+      });
+    } else {
+      var ingredients = [];
+      pantry.ingredients.forEach((i) => ingredients.push(i));
+      console.log(ingredients);
+      RecipeDB.find({}, (err, recipies) => {
+        if (err) {
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.json({
+            success: false,
+            status: "Recipies not found!!",
+            error: err,
+          });
+        } else {
+          var ingredients_exist = [];
+          let filteredResults = recipies.filter((result) => {
+            let containsIngredient = result.ingredients.filter((ingredient) => {
+              return (
+                ingredients.findIndex(
+                  (I) => I.toLowerCase() === ingredient.name.toLowerCase()
+                ) !== -1
+              );
+            });
+            if (containsIngredient.length !== 0) {
+              ingredients_exist.push(containsIngredient);
+            }
+            return containsIngredient.length !== 0;
+          });
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json({
+            success: true,
+            status: "Recipies found!!",
+            filteredResults: filteredResults,
+            ingredients_exist: ingredients_exist,
+          });
+        }
       });
     }
   });
