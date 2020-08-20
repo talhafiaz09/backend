@@ -67,6 +67,7 @@ recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
   });
 });
 recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
+  console.log(req.params.id);
   Pantry.findOne({ _id: req.params.id }, (err, pantry) => {
     if (err) {
       res.statusCode = 500;
@@ -79,7 +80,6 @@ recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
     } else {
       var ingredients = [];
       pantry.ingredients.forEach((i) => ingredients.push(i));
-      console.log(ingredients);
       RecipeDB.find({}, (err, recipies) => {
         if (err) {
           res.statusCode = 500;
@@ -104,14 +104,26 @@ recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
             }
             return containsIngredient.length !== 0;
           });
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json({
-            success: true,
-            status: "Recipies found!!",
-            filteredResults: filteredResults,
-            ingredients_exist: ingredients_exist,
-          });
+          console.log(filteredResults.length);
+          if (filteredResults.length == 0 || filteredResults == null) {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+              success: true,
+              status: "Recipies null!!",
+              found: false,
+            });
+          } else {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+              success: true,
+              found: true,
+              status: "Recipies found!!",
+              filteredResults: filteredResults,
+              ingredients_exist: ingredients_exist,
+            });
+          }
         }
       });
     }
@@ -119,6 +131,27 @@ recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
 });
 recipeRouter.get("/getallrecipiefromdb", (req, res) => {
   RecipeDB.find({}, (err, recipies) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Recipies not found!!",
+        error: err,
+      });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: true,
+        status: "Recipies found!!",
+        recipies: recipies,
+      });
+    }
+  });
+});
+recipeRouter.post("/getallfavouriterecipesfromdb", (req, res) => {
+  RecipeDB.find({ _id: req.body.id_array }, (err, recipies) => {
     if (err) {
       res.statusCode = 500;
       res.setHeader("Content-Type", "application/json");

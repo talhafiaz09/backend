@@ -85,7 +85,6 @@ favouriteRouter.delete("/removefromfavourite", (req, res) => {
   });
 });
 favouriteRouter.post("/findfavouriterecipies", (req, res) => {
-  console.log(req.body.useremail);
   Favourite.findOne({ useremail: req.body.useremail }, (err, favourite) => {
     if (err) {
       res.statusCode = 500;
@@ -98,6 +97,7 @@ favouriteRouter.post("/findfavouriterecipies", (req, res) => {
     } else {
       console.log(favourite);
       if (favourite == null) {
+        res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({
           success: true,
@@ -106,6 +106,7 @@ favouriteRouter.post("/findfavouriterecipies", (req, res) => {
           favourite: favourite,
         });
       } else if (favourite.recipeId.includes(req.body.recipeId)) {
+        res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({
           success: true,
@@ -114,6 +115,7 @@ favouriteRouter.post("/findfavouriterecipies", (req, res) => {
           favourite: favourite,
         });
       } else {
+        res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({
           success: true,
@@ -122,6 +124,35 @@ favouriteRouter.post("/findfavouriterecipies", (req, res) => {
           favourite: favourite,
         });
       }
+    }
+  });
+});
+favouriteRouter.post("/getallfavouriterecipies", (req, res) => {
+  Favourite.findOne({ useremail: req.body.useremail }, (err, favourite) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "No favourite found!!",
+        error: err,
+      });
+    } else if (favourite == null) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "No favourite found!!",
+        error: err,
+      });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: true,
+        status: "Favourite recipe found!!",
+        favourite: favourite,
+      });
     }
   });
 });
