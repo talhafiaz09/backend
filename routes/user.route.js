@@ -10,6 +10,13 @@ var multer = require("multer");
 // const DOMAIN = "sandbox1a754ed2185342c18e7e96ca4931d848.mailgun.org?";
 // const api_key = "cb0afb2376ebd5982b1e26fc20bc2f96-f7d0b107-dba4fcf7";
 // const mg = mailgun({ apiKey: api_key, domain: DOMAIN });
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "myfridge09@gmail.com",
+    pass: "talhafiaz13131313",
+  },
+});
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads");
@@ -99,7 +106,8 @@ userRouter.post("/signup", (req, res) => {
           error: err,
         });
       } else {
-        if (result == null || result.length == 0) {
+        console.log(result);
+        if (result != null) {
           res.statusCode = 500;
           res.setHeader("Content-Type", "application/json");
           res.json({
@@ -110,13 +118,6 @@ userRouter.post("/signup", (req, res) => {
         } else {
           var randomnumber =
             Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
-          var transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "myfridge09@gmail.com",
-              pass: "talhafiaz13131313",
-            },
-          });
           var mailOptions = {
             from: "myfridge09@gmail.com",
             to: req.body.username,
@@ -169,6 +170,93 @@ userRouter.post("/signupAfterConfirmation", (req, res) => {
           user: user,
         });
       });
+    }
+  });
+});
+//Find one
+userRouter.get("/finduser/:id", function (req, res, next) {
+  User.findById(req.params.id, function (err, result) {
+    if (err) {
+      return next(err);
+    }
+    console.log(result);
+    res.contentType(result.profilepicture.contentType);
+    res.send(result.profilepicture.data);
+  });
+});
+//get Code
+userRouter.post("/getcode", (req, res) => {
+  var randomnumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+  var mailOptions = {
+    from: "myfridge09@gmail.com",
+    to: req.body.username,
+    subject: "Password reset Code",
+    html:
+      "<h3>Your reset password code is:</h3><h1><b>" +
+      randomnumber +
+      "</b></h1>",
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "application/json");
+  res.json({
+    success: true,
+    status: "Successful !!",
+    code: randomnumber,
+  });
+});
+
+//Forget Password
+userRouter.post("/forgetpassword", (req, res) => {
+  User.findOne({ username: req.body.username }, (err, user) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Unsuccessful !!",
+        error: err,
+      });
+    } else {
+      if (user == null) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: false,
+          status: "User not found!!",
+          found: false,
+          error: err,
+        });
+      } else {
+        user.setPassword(req.body.password, (err, result) => {
+          if (err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+              success: false,
+              status: "Unsuccessful!!",
+              found: false,
+              error: err,
+            });
+          } else {
+            user.save();
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+              success: true,
+              status: "Password changed!!",
+              found: true,
+              result: result,
+            });
+          }
+        });
+      }
     }
   });
 });
