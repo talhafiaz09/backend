@@ -55,6 +55,7 @@ userRouter.post("/login", (req, res, next) => {
         }
         var token = authenticate.getToken({ _id: req.user._id });
         res.statusCode = 200;
+
         res.setHeader("Content-Type", "application/json");
         res.json({
           success: true,
@@ -188,7 +189,7 @@ userRouter.get("/finduser/:id", function (req, res, next) {
 userRouter.post("/getcode", (req, res) => {
   var randomnumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   var mailOptions = {
-    from: "myfridge09@gmail.com",
+    from: "noreply@MyFridge.com",
     to: req.body.username,
     subject: "Password reset Code",
     html:
