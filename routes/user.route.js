@@ -187,29 +187,53 @@ userRouter.get("/finduser/:id", function (req, res, next) {
 });
 //get Code
 userRouter.post("/getcode", (req, res) => {
-  var randomnumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
-  var mailOptions = {
-    from: "noreply@MyFridge.com",
-    to: req.body.username,
-    subject: "Password reset Code",
-    html:
-      "<h3>Your reset password code is:</h3><h1><b>" +
-      randomnumber +
-      "</b></h1>",
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
+  User.findOne({ username: req.body.username }, (err, user) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Unsuccessful !!",
+        error: err,
+      });
     } else {
-      console.log("Email sent: " + info.response);
+      if (user == null) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: false,
+          status: "User not exist!!",
+          found: false,
+          error: err,
+        });
+      } else {
+        var randomnumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+        var mailOptions = {
+          from: "noreply@MyFridge.com",
+          to: req.body.username,
+          subject: "Password reset Code",
+          html:
+            "<h3>Your reset password code is:</h3><h1><b>" +
+            randomnumber +
+            "</b></h1>",
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: true,
+          status: "Successful !!",
+          found: true,
+          code: randomnumber,
+        });
+      }
     }
-  });
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "application/json");
-  res.json({
-    success: true,
-    status: "Successful !!",
-    code: randomnumber,
   });
 });
 
@@ -257,6 +281,62 @@ userRouter.post("/forgetpassword", (req, res) => {
             });
           }
         });
+      }
+    }
+  });
+});
+//Update
+userRouter.post("/updateuser", (req, res) => {
+  User.findOne({ username: req.body.username }, (err, user) => {
+    console.log(req.body.newpassword);
+    console.log(req.body.oldpassword);
+    console.log(req.body.profilepicture);
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Unsuccessful !!",
+        error: err,
+      });
+    } else {
+      if (user == null) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: false,
+          status: "User not found!!",
+          found: false,
+          error: err,
+        });
+      } else {
+        user.changePassword(
+          req.body.oldpassword,
+          req.body.newpassword,
+          (err, result) => {
+            if (err) {
+              res.statusCode = 500;
+              res.setHeader("Content-Type", "application/json");
+              res.json({
+                success: false,
+                status: "Unsuccessful!!",
+                password: false,
+                error: err,
+              });
+            } else {
+              user.profilepicture.data = req.body.profilepicture;
+              user.save();
+              res.statusCode = 200;
+              res.setHeader("Content-Type", "application/json");
+              res.json({
+                success: true,
+                status: "User updated!!",
+                password: true,
+                result: result,
+              });
+            }
+          }
+        );
       }
     }
   });
