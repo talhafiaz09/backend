@@ -67,7 +67,6 @@ recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
   });
 });
 recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
-  console.log(req.params.id);
   Pantry.findOne({ _id: req.params.id }, (err, pantry) => {
     if (err) {
       res.statusCode = 500;
@@ -104,7 +103,6 @@ recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
             }
             return containsIngredient.length !== 0;
           });
-          console.log(filteredResults.length);
           if (filteredResults.length == 0 || filteredResults == null) {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");

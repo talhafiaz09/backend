@@ -70,7 +70,6 @@ favouriteRouter.delete("/removefromfavourite", (req, res) => {
     } else {
       favourite.recipeId.forEach((I) => {
         if (I === req.body.recipeId) {
-          console.log(I);
           favourite.recipeId.splice(favourite.recipeId.indexOf(I), 1);
         }
       });
@@ -95,7 +94,6 @@ favouriteRouter.post("/findfavouriterecipies", (req, res) => {
         error: err,
       });
     } else {
-      console.log(favourite);
       if (favourite == null) {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");

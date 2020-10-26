@@ -2,30 +2,33 @@ var express = require("express");
 var Pantry = require("../models/pantry.model");
 var pantryRouter = express.Router();
 //Add pantry
-pantryRouter.post("/addIngredients", (req, res) => {
-  const pantry = new Pantry();
-  pantry.name = req.body.pantryname;
-  pantry.ingredients = req.body.ingredients;
-  pantry.useremail = req.body.useremail;
-  Pantry.create(pantry, (err, pantry) => {
-    if (err) {
-      res.statusCode = 500;
-      res.setHeader("Content-Type", "application/json");
-      res.json({
-        success: false,
-        status: "Pantry not added!!",
-        error: err,
-      });
-    } else {
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.json({
-        success: true,
-        status: "Pantry added!!",
-        Pantry: pantry,
-      });
+pantryRouter.post("/addPantry", (req, res) => {
+  Pantry.create(
+    {
+      name: req.body.pantryname,
+      ingredients: [],
+      useremail: req.body.useremail,
+    },
+    (err, pantry) => {
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: false,
+          status: "Pantry not added!!",
+          error: err,
+        });
+      } else {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: true,
+          status: "Pantry added!!",
+          Pantry: pantry,
+        });
+      }
     }
-  });
+  );
 });
 pantryRouter.get("/userallpantries/:useremail", (req, res) => {
   Pantry.find({ useremail: req.params.useremail }, (err, pantry) => {
@@ -38,7 +41,7 @@ pantryRouter.get("/userallpantries/:useremail", (req, res) => {
         error: err,
       });
     } else {
-      if (pantry.length != 0) {
+      if (pantry != null) {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({
@@ -57,8 +60,8 @@ pantryRouter.get("/userallpantries/:useremail", (req, res) => {
     }
   });
 });
-pantryRouter.delete("/userallpantries/:pantryid", (req, res) => {
-  Pantry.deleteOne({ _id: req.params.pantryid }, (err) => {
+pantryRouter.post("/deletePantry", (req, res) => {
+  Pantry.deleteOne({ _id: req.body.key }, (err, result) => {
     if (err) {
       res.statusCode = 500;
       res.setHeader("Content-Type", "application/json");
@@ -77,8 +80,8 @@ pantryRouter.delete("/userallpantries/:pantryid", (req, res) => {
     }
   });
 });
-pantryRouter.put("/addingingredienttopantry/:pantryid", (req, res) => {
-  Pantry.findOne({ _id: req.params.pantryid }, (err, result) => {
+pantryRouter.put("/addingingredienttopantry/:index", (req, res) => {
+  Pantry.findOne({ _id: req.params.index }, (err, result) => {
     if (err) {
       res.statusCode = 500;
       res.setHeader("Content-Type", "application/json");
@@ -89,7 +92,7 @@ pantryRouter.put("/addingingredienttopantry/:pantryid", (req, res) => {
       });
     } else {
       if (result.ingredients.includes(req.body.ingredientname)) {
-        res.statusCode = 500;
+        res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json({
           success: false,
@@ -109,9 +112,9 @@ pantryRouter.put("/addingingredienttopantry/:pantryid", (req, res) => {
     }
   });
 });
-pantryRouter.put("/updatepantryname/:pantryid", (req, res) => {
+pantryRouter.put("/updatepantryname/:id", (req, res) => {
   Pantry.findOneAndUpdate(
-    { _id: req.params.pantryid },
+    { _id: req.params.id },
     { name: req.body.pantryname },
     (err, result) => {
       if (err) {
@@ -145,7 +148,6 @@ pantryRouter.put("/deleteingredientfrompantry/:pantryid", (req, res) => {
         error: err,
       });
     } else {
-      console.log(req.body.ingredientindex);
       result.ingredients.splice(req.body.ingredientindex, 1);
       result.save();
       res.statusCode = 200;

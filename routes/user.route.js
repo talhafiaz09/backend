@@ -14,7 +14,7 @@ var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "myfridge09@gmail.com",
-    pass: "talhafiaz13131313",
+    pass: "talhafiaz1313131313",
   },
 });
 var storage = multer.diskStorage({
@@ -107,7 +107,6 @@ userRouter.post("/signup", (req, res) => {
           error: err,
         });
       } else {
-        console.log(result);
         if (result != null) {
           res.statusCode = 500;
           res.setHeader("Content-Type", "application/json");
@@ -180,7 +179,6 @@ userRouter.get("/finduser/:id", function (req, res, next) {
     if (err) {
       return next(err);
     }
-    console.log(result);
     res.contentType(result.profilepicture.contentType);
     res.send(result.profilepicture.data);
   });
@@ -288,9 +286,6 @@ userRouter.post("/forgetpassword", (req, res) => {
 //Update
 userRouter.post("/updateuser", (req, res) => {
   User.findOne({ username: req.body.username }, (err, user) => {
-    console.log(req.body.newpassword);
-    console.log(req.body.oldpassword);
-    console.log(req.body.profilepicture);
     if (err) {
       res.statusCode = 500;
       res.setHeader("Content-Type", "application/json");
@@ -347,7 +342,7 @@ userRouter.get("/finduser/:id", function (req, res, next) {
     if (err) {
       return next(err);
     }
-    console.log(result);
+
     res.contentType(result.profilepicture.contentType);
     res.send(result.profilepicture.data);
   });

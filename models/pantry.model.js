@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
+var Stuff = new Schema({ type: Array, default: [] });
 var pantrySchema = new Schema({
   name: {
     type: String,
@@ -13,7 +14,6 @@ var pantrySchema = new Schema({
     {
       type: String,
       required: true,
-      default: null,
     },
   ],
 });
