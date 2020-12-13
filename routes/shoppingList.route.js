@@ -77,6 +77,7 @@ shoppingListRouter.get("/allshoppinglist/:useremail", (req, res) => {
           status: "Shopping list not fetched!!",
           error: error,
         });
+        console.log(error);
       } else {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");

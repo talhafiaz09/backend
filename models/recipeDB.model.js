@@ -18,18 +18,25 @@ var recipeDBSchema = new Schema({
       type: { type: String, default: null },
     },
   ],
+  mealtype: {
+    type: String,
+    default: null,
+  },
+  cuisine: {
+    type: String,
+    default: null,
+  },
   steps: [
     {
       type: String,
       default: null,
     },
   ],
-  timers: [
-    {
-      type: String,
-      default: null,
-    },
-  ],
+  timerequired: {
+    type: String,
+    default: null,
+  },
+
   imageURL: {
     type: String,
     default: null,
@@ -68,5 +75,7 @@ var recipeDBSchema = new Schema({
     type: String,
     default: null,
   },
+  useremail: { type: String, default: null },
+  phonenumber: { type: String, default: null },
 });
 module.exports = mongoose.model("RecipeDB", recipeDBSchema);
