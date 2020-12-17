@@ -36,16 +36,19 @@ recipeRouter.get("/getrecipiesfromapi", (req, res) => {
   });
 });
 recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
+  console.log(req.body);
   const recipeDB = new RecipeDB();
   recipeDB.name = req.body.name;
   recipeDB.ingredients = req.body.ingredients;
+  recipeDB.mealtype = req.body.mealtype;
   recipeDB.steps = req.body.steps;
-  recipeDB.timers = req.body.timers;
+  recipeDB.cuisine = req.body.cuisine;
+  recipeDB.timerequired = req.body.timerequired;
   recipeDB.imageURL = req.body.imageURL;
-  recipeDB.originalURL = req.body.originalURL;
   recipeDB.rating = req.body.rating;
   recipeDB.nutrition = req.body.nutrition;
   recipeDB.video = req.body.video;
+  recipeDB.useremail = req.body.useremail;
   RecipeDB.create(recipeDB, (err, recipe) => {
     if (err) {
       res.statusCode = 500;
@@ -65,6 +68,19 @@ recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
       });
     }
   });
+});
+recipeRouter.post("/addrecipefromuser", (req, res) => {
+  try {
+    console.log(req.files);
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+      success: true,
+      status: "Recipe added!!",
+    });
+  } catch (e) {
+    console.log(e);
+  }
 });
 recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
   Pantry.findOne({ _id: req.params.id }, (err, pantry) => {

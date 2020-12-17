@@ -18,14 +18,18 @@ var recipeDBSchema = new Schema({
       type: { type: String, default: null },
     },
   ],
-  mealtype: {
-    type: String,
-    default: null,
-  },
-  cuisine: {
-    type: String,
-    default: null,
-  },
+  mealtype: [
+    {
+      type: String,
+      default: null,
+    },
+  ],
+  cuisine: [
+    {
+      type: String,
+      default: null,
+    },
+  ],
   steps: [
     {
       type: String,
@@ -41,10 +45,7 @@ var recipeDBSchema = new Schema({
     type: String,
     default: null,
   },
-  originalURL: {
-    type: String,
-    default: null,
-  },
+
   rating: {
     type: String,
     default: null,
