@@ -126,6 +126,7 @@ favouriteRouter.post("/findfavouriterecipies", (req, res) => {
   });
 });
 favouriteRouter.post("/getallfavouriterecipies", (req, res) => {
+  console.log(req.body);
   Favourite.findOne({ useremail: req.body.useremail }, (err, favourite) => {
     if (err) {
       res.statusCode = 500;
@@ -141,7 +142,6 @@ favouriteRouter.post("/getallfavouriterecipies", (req, res) => {
       res.json({
         success: false,
         status: "No favourite found!!",
-        error: err,
       });
     } else {
       res.statusCode = 200;

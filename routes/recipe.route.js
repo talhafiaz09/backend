@@ -37,19 +37,20 @@ recipeRouter.get("/getrecipiesfromapi", (req, res) => {
 });
 recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
   console.log(req.body);
-  const recipeDB = new RecipeDB();
-  recipeDB.name = req.body.name;
-  recipeDB.ingredients = req.body.ingredients;
-  recipeDB.mealtype = req.body.mealtype;
-  recipeDB.steps = req.body.steps;
-  recipeDB.cuisine = req.body.cuisine;
-  recipeDB.timerequired = req.body.timerequired;
-  recipeDB.imageURL = req.body.imageURL;
-  recipeDB.rating = req.body.rating;
-  recipeDB.nutrition = req.body.nutrition;
-  recipeDB.video = req.body.video;
-  recipeDB.useremail = req.body.useremail;
-  RecipeDB.create(recipeDB, (err, recipe) => {
+  // const recipeDB = new RecipeDB();
+  // recipeDB.name = req.body.name;
+  // recipeDB.ingredients = req.body.ingredients;
+  // recipeDB.mealtype = req.body.mealtype;
+  // recipeDB.steps = req.body.steps;
+  // recipeDB.cuisine = req.body.cuisine;
+  // recipeDB.timerequired = req.body.timerequired;
+  // recipeDB.imageURL = req.body.imageURL;
+  // recipeDB.rating = req.body.rating;
+  // recipeDB.nutrition = req.body.nutrition;
+  // recipeDB.video = req.body.video;
+  // recipeDB.originalURL = req.body.originalURL;
+  // recipeDB.useremail = req.body.useremail;
+  RecipeDB.create(req.body, (err, recipe) => {
     if (err) {
       res.statusCode = 500;
       res.setHeader("Content-Type", "application/json");
