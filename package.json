@@ -1,9 +1,10 @@
 {
   "name": "myfridge",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "main":"./bin/www",
   "scripts": {
-    "start": "npx nodemon ./bin/www"
+    "start": "node ./bin/www",
+    "server": "npx nodemon ./bin/www"
   },
   "dependencies": {
     "axios": "^0.19.2",
