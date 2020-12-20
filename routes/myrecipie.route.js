@@ -1,8 +1,9 @@
 var express = require("express");
 var Myrecipie = require("../models/myrecipie.model");
 var myrecipieRouter = express.Router();
+var RecipeDB = require("../models/recipeDB.model");
 myrecipieRouter.post("/addtomyrecipie", (req, res) => {
-//   console.log(req.body);
+  //   console.log(req.body);
   const myrecipie = new Myrecipie();
   myrecipie.useremail = req.body.useremail;
   myrecipie.recipeId = req.body.recipeId;
@@ -58,32 +59,44 @@ myrecipieRouter.post("/addtomyrecipie", (req, res) => {
     }
   });
 });
-// myrecipieRouter.delete("/removefromfavourite", (req, res) => {
-//   Favourite.findOne({ useremail: req.body.useremail }, (err, favourite) => {
-//     if (err) {
-//       res.statusCode = 500;
-//       res.setHeader("Content-Type", "application/json");
-//       res.json({
-//         success: false,
-//         status: "Not deleted from favourite!!",
-//         error: err,
-//       });
-//     } else {
-//       favourite.recipeId.forEach((I) => {
-//         if (I === req.body.recipeId) {
-//           favourite.recipeId.splice(favourite.recipeId.indexOf(I), 1);
-//         }
-//       });
-//       favourite.save();
-//       res.setHeader("Content-Type", "application/json");
-//       res.json({
-//         success: true,
-//         status: "Deleted from favourite!!",
-//         favourite: favourite,
-//       });
-//     }
-//   });
-// });
+myrecipieRouter.delete("/removefrommyrecipie", (req, res) => {
+  Myrecipie.findOne({ useremail: req.body.useremail }, (err, favourite) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Not deleted from my recipie!!",
+        error: err,
+      });
+    } else {
+      favourite.recipeId.forEach((I) => {
+        if (I === req.body.recipeId) {
+          favourite.recipeId.splice(favourite.recipeId.indexOf(I), 1);
+        }
+      });
+      favourite.save();
+      RecipeDB.findOneAndDelete({ _id: req.body.recipeId }, (err, data) => {
+        if (err) {
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.json({
+            success: false,
+            status: "Not deleted from recipie db!!",
+            error: err,
+          });
+        } else {
+          res.setHeader("Content-Type", "application/json");
+          res.json({
+            success: true,
+            status: "Deleted from my recipie!!",
+            data: data,
+          });
+        }
+      });
+    }
+  });
+});
 // myrecipieRouter.post("/findfavouriterecipies", (req, res) => {
 //   Favourite.findOne({ useremail: req.body.useremail }, (err, favourite) => {
 //     if (err) {
@@ -126,33 +139,33 @@ myrecipieRouter.post("/addtomyrecipie", (req, res) => {
 //     }
 //   });
 // });
-// myrecipieRouter.post("/getallfavouriterecipies", (req, res) => {
-//   console.log(req.body);
-//   Myrecipie.findOne({ useremail: req.body.useremail }, (err, favourite) => {
-//     if (err) {
-//       res.statusCode = 500;
-//       res.setHeader("Content-Type", "application/json");
-//       res.json({
-//         success: false,
-//         status: "No favourite found!!",
-//         error: err,
-//       });
-//     } else if (favourite == null) {
-//       res.statusCode = 500;
-//       res.setHeader("Content-Type", "application/json");
-//       res.json({
-//         success: false,
-//         status: "No favourite found!!",
-//       });
-//     } else {
-//       res.statusCode = 200;
-//       res.setHeader("Content-Type", "application/json");
-//       res.json({
-//         success: true,
-//         status: "Favourite recipe found!!",
-//         favourite: favourite,
-//       });
-//     }
-//   });
-// });
+myrecipieRouter.post("/getallmyrecipies", (req, res) => {
+  // console.log(req.body);
+  Myrecipie.findOne({ useremail: req.body.useremail }, (err, favourite) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "No my recipies found!!",
+        error: err,
+      });
+    } else if (favourite == null) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "No my recipies found!!",
+      });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: true,
+        status: "My recipe found!!",
+        favourite: favourite,
+      });
+    }
+  });
+});
 module.exports = myrecipieRouter;

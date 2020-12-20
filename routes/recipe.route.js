@@ -36,7 +36,7 @@ recipeRouter.get("/getrecipiesfromapi", (req, res) => {
   });
 });
 recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   // const recipeDB = new RecipeDB();
   // recipeDB.name = req.body.name;
   // recipeDB.ingredients = req.body.ingredients;
@@ -65,6 +65,29 @@ recipeRouter.post("/addrecipefromrecipedb", (req, res) => {
       res.json({
         success: true,
         status: "Recipe added!!",
+        Recipe: recipe,
+      });
+    }
+  });
+});
+recipeRouter.post("/updatemyrecipie/:id", (req, res) => {
+  // console.log(req.body);
+
+  RecipeDB.findOneAndUpdate({ _id: req.params.id }, req.body, (err, recipe) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Recipe not updated!!",
+        error: err,
+      });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: true,
+        status: "Recipe updated!!",
         Recipe: recipe,
       });
     }
