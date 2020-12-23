@@ -10,6 +10,7 @@ var userSchema = new Schema({
     data: String,
     contentType: String,
   },
+  premium: { type: Boolean, default: false },
 });
 userSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model("User", userSchema);

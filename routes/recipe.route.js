@@ -95,7 +95,7 @@ recipeRouter.post("/updatemyrecipie/:id", (req, res) => {
 });
 recipeRouter.post("/addrecipefromuser", (req, res) => {
   try {
-    console.log(req.files);
+    // console.log(req.files);
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
     res.json({
@@ -105,6 +105,19 @@ recipeRouter.post("/addrecipefromuser", (req, res) => {
   } catch (e) {
     console.log(e);
   }
+});
+recipeRouter.post("/typedvoicesearch/:text", async (req, res) => {
+  let receps = await RecipeDB.find({});
+  // console.log(req.params.text);
+  let regex = new RegExp(req.params.text.toLowerCase());
+  let filtered = receps.filter((R) => regex.test(R.name.toLowerCase()));
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "application/json");
+  res.json({
+    success: true,
+    status: "Recipies found!!",
+    filtered: filtered,
+  });
 });
 recipeRouter.get("/getrecipesonbaseofpantry/:id", (req, res) => {
   Pantry.findOne({ _id: req.params.id }, (err, pantry) => {
@@ -209,4 +222,5 @@ recipeRouter.post("/getallfavouriterecipesfromdb", (req, res) => {
     }
   });
 });
+
 module.exports = recipeRouter;

@@ -15,7 +15,7 @@ var transporter = nodemailer.createTransport({
   auth: {
     user: "myfridge09@gmail.com",
     // pass: "talhafiaz1313131313",
-    pass:"nbwktsyfhsrfbguk"
+    pass: "nbwktsyfhsrfbguk",
   },
 });
 var storage = multer.diskStorage({
@@ -175,15 +175,15 @@ userRouter.post("/signupAfterConfirmation", (req, res) => {
   });
 });
 //Find one
-userRouter.get("/finduser/:id", function (req, res, next) {
-  User.findById(req.params.id, function (err, result) {
-    if (err) {
-      return next(err);
-    }
-    res.contentType(result.profilepicture.contentType);
-    res.send(result.profilepicture.data);
-  });
-});
+// userRouter.get("/finduser/:id", function (req, res, next) {
+//   User.findById(req.params.id, function (err, result) {
+//     if (err) {
+//       return next(err);
+//     }
+//     res.contentType(result.profilepicture.contentType);
+//     res.send(result.profilepicture.data);
+//   });
+// });
 //get Code
 userRouter.post("/getcode", (req, res) => {
   User.findOne({ username: req.body.username }, (err, user) => {
@@ -235,7 +235,34 @@ userRouter.post("/getcode", (req, res) => {
     }
   });
 });
-
+userRouter.post("/updateuserpremium", (req, res) => {
+  // console.log("here");
+  // console.log(req.body);
+  User.findOneAndUpdate(
+    { username: req.body.useremail },
+    { premium: true },
+    (err, result) => {
+      if (err) {
+        f;
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: false,
+          status: "Not updated!!",
+          error: err,
+        });
+      } else {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          success: true,
+          status: "Updated!!",
+          User: result,
+        });
+      }
+    }
+  );
+});
 //Forget Password
 userRouter.post("/forgetpassword", (req, res) => {
   User.findOne({ username: req.body.username }, (err, user) => {
@@ -338,14 +365,25 @@ userRouter.post("/updateuser", (req, res) => {
   });
 });
 //Find one
-userRouter.get("/finduser/:id", function (req, res, next) {
-  User.findById(req.params.id, function (err, result) {
+userRouter.get("/finduser/:username", (req, res) => {
+  User.findOne({ username: req.params.username }, (err, result) => {
     if (err) {
-      return next(err);
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        status: "Unsuccessful!!",
+        error: err,
+      });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: true,
+        status: "User updated!!",
+        result: result,
+      });
     }
-
-    res.contentType(result.profilepicture.contentType);
-    res.send(result.profilepicture.data);
   });
 });
 //Find all users
